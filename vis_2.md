@@ -18,7 +18,7 @@ library(tidyverse)
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
-library(ggridges)
+library(patchwork)
 ```
 
 ## Load the weather data
@@ -244,3 +244,53 @@ ggplot(data = molokai, aes(x = date, y = tmax, color = name)) +
     ## Warning: Removed 1 rows containing missing values (`geom_point()`).
 
 ![](vis_2_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+## `patchwork`
+
+faceting
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) + 
+  geom_density(alpha = 0.5) + 
+  facet_grid(. ~ name)
+```
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_density()`).
+
+![](vis_2_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+What happens when you want multipanel plots but can’t facet?
+
+``` r
+tmax_tmin_p = 
+  weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = 0.5) + 
+  theme(legend.position = "none")
+
+prcp_dens_p = 
+  weather_df %>% 
+  filter(prcp > 0) %>% 
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 0.5) + 
+  theme(legend.position = "none")
+
+tmax_date_p = 
+  weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "none")
+
+(tmax_tmin_p + prcp_dens_p) / tmax_date_p
+```
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_smooth()`).
+    ## Removed 17 rows containing missing values (`geom_point()`).
+
+![](vis_2_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
