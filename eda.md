@@ -397,3 +397,7 @@ weather_df %>%
     ## 1 CentralPark_NY            12.2           4.43
     ## 2 Molokai_HI                 5.6           1.24
     ## 3 Waterhole_WA              11.1           3.04
+
+## Quick note
+
+summarize only gets you so far
